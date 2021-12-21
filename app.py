@@ -21,26 +21,29 @@ def locations(category):
 
     if action == UP_ACTION:
       visit.moveup(name)
+      return redirect(url_for('locations', category=category))
     elif action == DEL_ACTION:
       visit.delete(name)
+      return redirect(url_for('locations', category=category))
   ## Return the main template with variables
   return render_template('locations.html', category=category, categories=categories, locations=locations, add_location=add_location)
 
 @app.route("/add_location", methods=["POST"])
 def add_location():
   ## Validate and collect the form data
+  add_form = AddLocationForm(csrf_enabled=False)
 
-  if True:
-      name=None
-      description=None
-      category=None
+  if add_form.validate_on_submit():
+      name=add_form.name.data
+      description=add_form.description.data
+      category=add_form.category.data
       visit.add(name, description, category)
 
   ## Redirect to locations route function
-  return redirect(url_for('locations'))
+  return redirect(url_for('locations', category=category))
 
 @app.route("/")
 def index():
 
   ## Redirect to locations route function
-  return redirect(url_for('locations'))
+  return redirect(url_for('locations', category='recommended'))
